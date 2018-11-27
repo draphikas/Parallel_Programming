@@ -9,11 +9,6 @@ extern __inline__ uint64_t rdtsc(void) {
   return (d<<32) | a;
 }
 
-// static inline double	calc_func(double x)
-// {	
-// 	return (1 / (1 + x * x));
-// }
-
 int		main(int ac, const char **av)
 {
     double	prec = atof(av[1]), res = 0, it = 1 / prec, x, tmp = 1;

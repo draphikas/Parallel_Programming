@@ -1,52 +1,85 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
+#include <time.h>
 #include <omp.h>
-#include <sys/time.h>
-#define SIZE 500
 
-double get_time() {
-    struct timeval tv;
-    gettimeofday(&tv, (void *)0);
-    return (double) tv.tv_sec + tv.tv_usec*1e-6;
+#define RAND(min, max)	min + (double)(rand() / (RAND_MAX / (max - min)))
+#define M		5
+#define N		3
+#define P		4
+
+#ifdef __i386
+extern __inline__ uint64_t rdtsc(void) {
+  uint64_t x;
+  __asm__ volatile ("rdtsc" : "=A" (x));
+  return x;
+}
+#elif defined __amd64
+extern __inline__ uint64_t rdtsc(void) {
+  uint64_t a, d;
+  __asm__ volatile ("rdtsc" : "=a" (a), "=d" (d));
+  return (d<<32) | a;
+}
+#endif
+
+void	init(double **a, double **b, double **res)
+{
+	*a = (double*)malloc(sizeof(double) * M * N);
+	*b = (double*)malloc(sizeof(double) * N * P);
+	*res = (double*)calloc(M * P, sizeof(double));
+    #pragma omp parallel
+    {
+        #pragma omp for
+        for (int i = 0; i < N; i++)
+            for (int j = 0; j < M; j++)
+                (*a)[i * M + j] = RAND(0, 3);
+        #pragma omp for
+        for (int i = 0; i < P; i++)
+            for (int j = 0; j < N; j++)
+                (*b)[i * N + j] = RAND(0, 3);
+    }
 }
 
-int main(int argc, char **argv)
+void	print_mat(double *matrix, int mat_i, int mat_j, char *name)
 {
-    int nb, i , j, k;
-    double t,start,stop;  
-    double* matrice_A;
-    double* matrice_B;
-    double* matrice_res;
+	printf("===== MATRIX %s =====\n", name);
+	for (int i = 0; i < mat_i; i++) {
+		for (int j = 0; j < mat_j; j++)
+			printf("%.2f\t", matrix[i * mat_j + j]);
+		printf("\n");
+	}
+	printf("\n");
+}
 
-    // Allocations
-    matrice_A = (double*) malloc(SIZE*SIZE*sizeof(double)); 
-    matrice_B = (double*) malloc(SIZE*SIZE*sizeof(double));
-    matrice_res = (double*) malloc(SIZE*SIZE*sizeof(double)); 
-    for(i = 0; i < SIZE; i++) {
-        for(j = 0; j < SIZE; j++) {
-            matrice_A[i*SIZE + j] = (double)rand()/(double)RAND_MAX;
-            matrice_B[i*SIZE + j] = (double)rand()/(double)RAND_MAX; 
-        }
-    }
-    printf("Nb.threads\tTps.\n");
-    for(nb=1;nb<=12;nb++){
-        start = get_time();
-        #pragma omp parallel for num_threads(nb) private(j,k)
-        for(i = 0; i < SIZE; i++){
-            for(j = 0; j < SIZE; j++){
-                matrice_res[i*SIZE + j] = 0.0;
-                for(k = 0; k < SIZE; k++) {
-					matrice_res[i*SIZE + j] += (matrice_A[i*SIZE + k]*matrice_B[k*SIZE + j]);
-                }
+int		main(int ac, char **av)
+{
+	double *a, *b, *res, tmp;
+
+	srand(time(NULL));
+	init(&a, &b, &res);
+	print_mat(a, N, M, "A");
+	print_mat(b, P, N, "B");
+	uint64_t time1 = rdtsc();
+    #pragma omp parallel
+    {
+        #pragma omp for private(j, k)
+        for(int i = 0; i < P; i++) {
+            for(int k = 0; k < N; k++) {
+                tmp = b[i * N + k];
+                #pragma omp for reduction(+:res[i * M + j])
+                for(int j = 0; j < M; j++)
+                    res[i * M + j] += a[k * M + j] * tmp;
             }
         }
-		stop=get_time();
-		t=stop-start;
-		printf("%d\t\t%f\n",nb,t);
-    }   
-	// Libérations
-	free(matrice_A);
-	free(matrice_B);
-	free(matrice_res);
-	return EXIT_SUCCESS;
+    }
+	// for(int i = 0; i < P; i++) {
+	// 	for(int j = 0; j < M; j++) {
+	// 		for(int k = 0; k < N; k++)
+	// 			res[i * M + j] += a[k * M + j] * b[i * N + k];
+	// 	}
+	// }
+	printf("\nExec Time : %f\n", (double)(rdtsc() - time1) / 2500000000);
+	print_mat(res, P, M, "RES");
+	return (0);
 }
