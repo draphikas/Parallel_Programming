@@ -6,7 +6,7 @@ Use of MPI and OpenMP for some mathematical problems
 		ex: PRECISION			= 0.000001
 		ex: NB_PROCESSUS / NB_THREADS	= 4
 
-PI Calculation
+### PI Calculation
 
 	arctan_1:
 		COMPIL	=>	gcc -o arctan_1 arctan_1.c
@@ -25,7 +25,7 @@ PI Calculation
 		RUN	=>	./pthread_arctan_1 PRECISION NB_THREADS
 
 
-MATRIX Product
+### MATRIX Product
 
 	product & openmp:
 		COMPIL	=>	gcc -o [omp_]product [omp_]product.c
