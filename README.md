@@ -1,6 +1,6 @@
   
  # Parallel Programming
-	Use of MPI and OpenMP for some mathematical problems
+Use of MPI and OpenMP for some mathematical problems
 
 	COMMANDS
 		ex: PRECISION					= 0.000001
