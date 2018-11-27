@@ -31,6 +31,6 @@
 		COMPIL	=>	gcc -o [omp_]product [omp_]product.c
 		RUN	=>	./[omp_]product
 
-	MPI (need mpich package installed)
+	MPI (need mpich package installed):
 		COMPIL	=> mpicc -o mpi_product mpi_product.c
 		RUN	=> mpirun -n NB_PROCESSUS ./mpi_processus
