@@ -3,7 +3,7 @@
 Use of MPI and OpenMP for some mathematical problems
 
 	COMMANDS
-		ex: PRECISION					= 0.000001
+		ex: PRECISION			= 0.000001
 		ex: NB_PROCESSUS / NB_THREADS	= 4
 
 PI Calculation
