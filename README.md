@@ -10,27 +10,27 @@
 
 	arctan_1:
 		COMPIL	=>	gcc -o arctan_1 arctan_1.c
-		RUN		=>	./arctan_1 PRECISION
+		RUN	=>	./arctan_1 PRECISION
 
 	OpenMP:
 		COMPIL	=>	gcc -o omp_arctan_1 arctan_1_omp.c
-		RUN		=>	./omp_arctan_1 PRECISION
+		RUN	=>	./omp_arctan_1 PRECISION
 
 	MPI (need mpich package installed):
 		COMPIL	=>	mpicc -o mpi_arctan_1 arctan_1_mpi.c
-		RUN		=>	mpirun -n NB_PROCESSUS ./mpi_arctan_1 PRECISION
+		RUN	=>	mpirun -n NB_PROCESSUS ./mpi_arctan_1 PRECISION
 
 	pthread:
 		COMPIL	=>	gcc -o pthread_arctan_1 arctan_1_pthread.c -pthread
-		RUN		=>	./pthread_arctan_1 PRECISION NB_THREADS
+		RUN	=>	./pthread_arctan_1 PRECISION NB_THREADS
 
 
   MATRIX Product
 
 	product & openmp:
 		COMPIL	=>	gcc -o [omp_]product [omp_]product.c
-		RUN		=>	./[omp_]product
+		RUN	=>	./[omp_]product
 
 	MPI (need mpich package installed)
 		COMPIL	=> mpicc -o mpi_product mpi_product.c
-		RUN		=> mpirun -n NB_PROCESSUS ./mpi_processus
+		RUN	=> mpirun -n NB_PROCESSUS ./mpi_processus
