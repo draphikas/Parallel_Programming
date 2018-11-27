@@ -1,5 +1,5 @@
   
- Parallel Programming
+ # Parallel Programming
 	Use of MPI and OpenMP for some mathematical problems
 
 	COMMANDS
