@@ -28,6 +28,8 @@ void	init(double **a, double **b, double **res)
     }
 }
 
+// Ceci est un commentaire
+
 void	print_mat(double *matrix, int mat_i, int mat_j, char *name)
 {
 	printf("===== MATRIX %s =====\n", name);
